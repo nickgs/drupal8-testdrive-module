@@ -6,8 +6,8 @@
 
 		<title>D8 Test Drive - Module Development</title>
 
-		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
-		<meta name="author" content="Hakim El Hattab">
+		<meta name="description" content="An introduction to Drupal 8 module development.">
+		<meta name="author" content="Nick Selvaggio">
 
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -300,11 +300,40 @@ class HelloRequestForm extends FormBase {
 					</section>
 				</section>
 				<section>
+				<section>
 					<h2>Lets make a Block!</h2>
 					<div class="fragment" data-fragment-index="1">
 							<p>Without hook_block_info and hook_block_view!</p>
 					</div>
 				</section>
+				<section>
+					<p>/modules/hello/src/Plugin/Block/HelloBlock.php</p>
+						<pre>
+							<code class="php" data-trim>
+namespace Drupal\hello\Plugin\Block;
+
+use Drupal\Core\Block\BlockBase;
+
+/**
+ * Provides a 'Hello' block.
+ *
+ * @Block(
+ *   id = "hello_block",
+ *   admin_label = @Translation("Hello block"),
+ * )
+ */
+class HelloBlock extends BlockBase {
+  public function build() {
+    return array(
+      '#markup' => $this->t("This is a an awesome block!"),
+    );
+  }
+}
+
+							</code>
+						</pre>
+				</section>
+			</section>
 			</div>
 		<footer class="sego-logo">
       <a href="http://www.segosolutions.net/"><img src="sego/sego_logo_blkbg.png" alt="Sego Solutions logo" height="37" /></a>

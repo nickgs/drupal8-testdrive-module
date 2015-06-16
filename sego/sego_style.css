@@ -5,3 +5,8 @@
   position: absolute;
   bottom: 1em;
   left: 2em; }
+
+.reveal section img.no-style-image {
+  background: none;
+  border: none;
+  box-shadow: none; }

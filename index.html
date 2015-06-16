@@ -46,6 +46,7 @@
 				<section>
 					<h1>Drupal 8</h1>
           <h5>Module Development</h5>
+          <img class="no-style-image" style= "width: 160px;" src="images/d8_logo.png"/>
           <h6>A test drive</h6>
 					<p>
 						<small><a href="http://www.nickgs.com">Nick Selvaggio</a> / <a href="http://www.segosolutions.com">www.segosolutions.com</a></small>
@@ -56,8 +57,9 @@
 					<h2>A little about you.</h2>
 					<aside class="notes">
               <ul>
-                <li>Ask who is familar with Drupal 7 and Drupal 8?</li>
+                <li>Who is familar with OO concepts?</li>
                 <li>How many are familar with D7 module development</li>
+                <li>Who loves D7 development?</li>
                 <li>Who is excited about Drupal 8?</li>
               </ul>
             </aside>
@@ -69,6 +71,7 @@
 
 				<section>
 					<h2>Play Along!</h2>
+					<img src="images/ss_logo_blkbg.png" class="no-style-image" style="width: 360px;"/>
 					<blockquote>StackStarter.io/spin/123456</blockquote>
 					<aside class="notes">
               <ul>
@@ -84,6 +87,7 @@
 						<aside class="notes">
               <ul>
                 <li>Talk a bit about the history of Drupal.</li>
+                <li>Initial release 2001</li>
               </ul>
             </aside>
 					</section>
@@ -137,6 +141,9 @@
              <p class="fragment" data-fragment-index="2">Doctrine Annotations</p>
              <p class="fragment" data-fragment-index="3">Twig theme system</p>
              <p class="fragment" data-fragment-index="4">PHP Unit for testing</p>
+             <div class="fragment" data-fragment-index="5">
+             <blockquote>For a full list: <br/>/core/composer.json</blockquote>
+           		</div>
               <aside class="notes">
               <ul>
                 <li>Talk about the PHP 4 request cycle (Super globals --> PHP --> print)</li>
@@ -156,7 +163,7 @@
 				<section>
 						<h2>Stucture of a module</h2>
 						<div class="fragment" data-fragment-index="1">
-						 <p>/modules/hello/hello.info.yml</p>
+						 <p>/modules/contrib/hello/hello.info.yml</p>
             <pre><code class="yaml" data-trim>
 name: Hello
 description: A friendly Drupal 8 module
@@ -183,7 +190,7 @@ core: 8.x
             </aside>
 					</section>
 					<section>
-				/modules/hello/src/Controller/HelloController.php
+				/modules/contrib/hello/src/Controller/HelloController.php
 						<pre><code class="php" data-trim>
 /**
  * Our first Drupal 8 controller.
@@ -204,7 +211,7 @@ class HelloController extends ControllerBase {
             </code></pre>
 					</section>
 					<section>
-						<p>/modules/hello/hello.routing.yml</p>
+						<p>/modules/contrib/hello/hello.routing.yml</p>
 						<pre>
 							<code class="yaml" data-trim>
 							hello.sayHi:
@@ -227,7 +234,7 @@ class HelloController extends ControllerBase {
 					</div>
 					</section>
 					<section>
-						<p>/modules/hello/src/Form/HelloRequestForm.php</p>
+						<p>/modules/contrib/hello/src/Form/HelloRequestForm.php</p>
 						<pre>
 							<code class="php" data-trim>
 /**
@@ -286,7 +293,7 @@ class HelloRequestForm extends FormBase {
 						</pre>
 					</section>
 					<section>
-						<p>/modules/hello/hello.routing.yml</p>
+						<p>/modules/contrib/hello/hello.routing.yml</p>
 							<pre>
 							<code class="yaml" data-trim>
 							hello.requestHi:

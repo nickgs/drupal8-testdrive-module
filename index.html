@@ -163,7 +163,7 @@
 				<section>
 						<h2>Stucture of a module</h2>
 						<div class="fragment" data-fragment-index="1">
-						 <p>/modules/contrib/hello/hello.info.yml</p>
+						 <p>/modules/custom/hello/hello.info.yml</p>
             <pre><code class="yaml" data-trim>
 name: Hello
 description: A friendly Drupal 8 module
@@ -185,12 +185,12 @@ core: 8.x
 						</div>
 						 <aside class="notes">
               <ul>
-                <li>The Synfony Routing component is used for defing our routes</li>
+                <li>The Synfony Routing component is used for defining our routes</li>
               </ul>
             </aside>
 					</section>
 					<section>
-				/modules/contrib/hello/src/Controller/HelloController.php
+				/modules/custom/hello/src/Controller/HelloController.php
 						<pre><code class="php" data-trim>
 /**
  * Our first Drupal 8 controller.
@@ -211,7 +211,7 @@ class HelloController extends ControllerBase {
             </code></pre>
 					</section>
 					<section>
-						<p>/modules/contrib/hello/hello.routing.yml</p>
+						<p>/modules/custom/hello/hello.routing.yml</p>
 						<pre>
 							<code class="yaml" data-trim>
 							hello.sayHi:
@@ -234,7 +234,7 @@ class HelloController extends ControllerBase {
 					</div>
 					</section>
 					<section>
-						<p>/modules/contrib/hello/src/Form/HelloRequestForm.php</p>
+						<p>/modules/custom/hello/src/Form/HelloRequestForm.php</p>
 						<pre>
 							<code class="php" data-trim>
 /**
@@ -293,7 +293,7 @@ class HelloRequestForm extends FormBase {
 						</pre>
 					</section>
 					<section>
-						<p>/modules/contrib/hello/hello.routing.yml</p>
+						<p>/modules/custom/hello/hello.routing.yml</p>
 							<pre>
 							<code class="yaml" data-trim>
 							hello.requestHi:
@@ -314,7 +314,7 @@ class HelloRequestForm extends FormBase {
 					</div>
 				</section>
 				<section>
-					<p>/modules/hello/src/Plugin/Block/HelloBlock.php</p>
+					<p>/modules/custom/hello/src/Plugin/Block/HelloBlock.php</p>
 						<pre>
 							<code class="php" data-trim>
 namespace Drupal\hello\Plugin\Block;
@@ -340,7 +340,82 @@ class HelloBlock extends BlockBase {
 							</code>
 						</pre>
 				</section>
+        <section>
+          <blockquote>Plugins Everywhere</blockquote>
+          <ul class="fragment" data-fragment-index="1">
+            <li>Blocks</li>
+            <li>Views</li>
+            <li>Text Formats</li>
+            <li>Fields</li>
+            <li>Field Widgets</li>
+            <li>Image effects</li>
+            <li>Mail Backends</li>
+            <li>Migrations</li>
+            <li>And more...</li>
+          </ul>
+        </section>
 			</section>
+      <section>
+        <section>
+          <h2>What about theming our content?</h2>
+          <div class="fragment" data-fragment-index="1">
+              <p>This will look familar</p>
+          </div>
+        </section>
+        <section>
+          <p>/modules/custom/hello/hello.module</p>
+          <pre>
+            <code class="php" data-trim>
+              /**
+ * Implements hook_theme
+ */
+function hello_theme() {
+  $theme['say_hello'] = array(
+      'variables' => array('name'=>null),
+      'template' => 'say_hello',
+  );
+
+  return $theme;
+}
+            </code>
+          </pre>
+        </section>
+        <section>
+          <p>/modules/custom/hello/templates/say_hello.html.twig</p>
+          <pre>
+            <code class="twig" data-trim>
+              &lt;section>
+  {% trans %}
+    <h1>Hello {{ name }}</h1>
+  {% endtrans %}
+&lt;/section>
+
+            </code>
+          </pre>
+        </section>
+        <section>
+          /modules/custom/hello/src/Controller/HelloController.php
+          <pre><code class="php" data-trim>
+/**
+ * Our first Drupal 8 controller.
+ * Lets say HI
+ */
+namespace Drupal\hello\Controller;
+
+use Drupal\Core\Controller\ControllerBase;
+
+class HelloController extends ControllerBase {
+  public function sayHi($name) {
+    return array(
+        '#theme'=>'say_hello',
+        '#name' => $name,
+      );
+  }
+}
+
+          </code></pre>
+        </section>
+      </section>
 			</div>
 		<footer class="sego-logo">
       <a href="http://www.segosolutions.net/"><img src="sego/sego_logo_blkbg.png" alt="Sego Solutions logo" height="37" /></a>

@@ -416,6 +416,86 @@ class HelloController extends ControllerBase {
           </code></pre>
         </section>
       </section>
+      <section>
+        <section>
+          <h2>Services</h2>
+          <blockquote class="fragment" data-fragment-index="1">
+            Small (as possible) stateless objects that perform some testable task.
+          </blockquote>
+          <p class="fragment" data-fragment-index="2">
+            This opens up an interesting and powerful world for us...
+          </p>
+        </section>
+        <section>
+          /modules/custom/hello/src/HelloService.php
+          <pre><code class="php" data-trim>
+namespace Drupal\hello;
+
+class HelloService {
+  //dead simple example.
+  public function doSomeWork() {
+    //some heavy lifting.
+    drupal_set_message("Hello Services");
+  }
+}
+          </code>
+          </pre>
+        </section>
+        <section>
+            <p>/modules/custom/hello/hello.services.yml</p>
+              <pre>
+              <code class="yaml" data-trim>
+              services:
+  hello.hello_service:
+    class: Drupal\hello\HelloService
+              </code>
+            </pre>
+          </section>
+          <section>
+            <h2>Now lets use it!</h2>
+          </section>
+          <section>
+          /modules/custom/hello/src/Controller/HelloController.php
+          <pre><code class="php" data-trim>
+/**
+ * Our first Drupal 8 controller with a custom service!
+ * Lets say HI
+ */
+namespace Drupal\hello\Controller;
+
+use Drupal\Core\Controller\ControllerBase;
+use Drupal\hello\HelloService;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+class HelloController extends ControllerBase {
+  protected $helloServ;
+
+  //our contructor is injected with our service.
+  public function __construct(HelloService $s) {
+    $this->helloServ = $s;
+  }
+
+  //This is the interesting method. ControllerBase will call this.
+  public static function create(ContainerInterface $container) {
+    //and create an instance of this class, injecting our service!
+    return new static($container->get('hello.hello_service'));
+  }
+
+  public function sayHi($name) {
+    //lets use that bad boy!
+    $this->helloServ->doSomeWork();
+
+    return array(
+        '#theme'=>'say_hello',
+        '#name' => $name,
+      );
+  }
+}
+
+          </code>
+          </pre>
+        </section>
+      </section>
 			</div>
 		<footer class="sego-logo">
       <a href="http://www.segosolutions.net/"><img src="sego/sego_logo_blkbg.png" alt="Sego Solutions logo" height="37" /></a>

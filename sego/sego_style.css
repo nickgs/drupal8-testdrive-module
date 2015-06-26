@@ -10,3 +10,19 @@
   background: none;
   border: none;
   box-shadow: none; }
+
+.spin-code {
+  float: right; }
+  .spin-code blockquote {
+    color: white;
+    font-family: 'Source Sans Pro', Helvetica, sans-serif;
+    font-size: 1.7em;
+    background: #527c97;
+    padding: 10px; }
+
+.stack-starter {
+  float: left; }
+  .stack-starter blockquote {
+    color: white;
+    font-family: 'Source Sans Pro', Helvetica, sans-serif;
+    font-size: 1.7em; }

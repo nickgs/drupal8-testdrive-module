@@ -16,3 +16,25 @@ $ss_blue: #527c97;
   box-shadow: none;
 }
 
+.spin-code {
+  float: right;
+
+  blockquote {
+    color: white;
+    font-family: 'Source Sans Pro', Helvetica, sans-serif;
+    font-size: 1.7em;
+    background: $ss_blue;
+    padding: 10px;
+  }
+}
+
+.stack-starter {
+  float: left;
+
+  blockquote {
+    color: white;
+    font-family: 'Source Sans Pro', Helvetica, sans-serif;
+    font-size: 1.7em;
+  }
+}
+

@@ -198,6 +198,43 @@ core: 8.x
               </ul>
             </aside>
 					</section>
+          <section>
+        /modules/custom/hello/src/Controller/HelloController.php
+            <pre><code class="php" data-trim>
+/**
+ * Our first Drupal 8 controller.
+ */
+namespace Drupal\hello\Controller;
+
+use Drupal\Core\Controller\ControllerBase;
+
+class HelloController extends ControllerBase {
+  public function sayHi() {
+
+    return array(
+        '#markup'=>"Why hello Drupal 8",
+      );
+  }
+}
+            </code></pre>
+          </section>
+          <section>
+            <p>/modules/custom/hello/hello.routing.yml</p>
+            <pre>
+              <code class="yaml" data-trim>
+              hello.sayHi:
+  path: '/hello'
+  defaults:
+    _controller: '\Drupal\hello\Controller\HelloController::sayHi'
+  requirements:
+    _permission: 'access content'
+
+              </code>
+            </pre>
+          </section>
+          <section>
+            <h2>What about passing arguments to a route?</h2>
+          </section>
 					<section>
 				/modules/custom/hello/src/Controller/HelloController.php
 						<pre><code class="php" data-trim>
@@ -234,6 +271,42 @@ class HelloController extends ControllerBase {
 							</code>
 						</pre>
 					</section>
+          <section>
+            <h2>Awesome!</h2>
+            <h5>Now lets get a bit more strict with our route matching</h5>
+          </section>
+          <section>
+            <p>/modules/custom/hello/hello.routing.yml</p>
+            <pre>
+              <code class="yaml" data-trim>
+              hello.sayHi:
+  path: '/hello/{name}'
+  defaults:
+    _controller: '\Drupal\hello\Controller\HelloController::sayHi'
+    name: 'Nick'
+  requirements:
+    _permission: 'access content'
+    name: ^N[a-z]+
+              </code>
+            </pre>
+            <div class="fragment" data-fragment-index="1">
+              <p>Our route is now a bit antisocial</p>
+            </div>
+          </section>
+          <section>
+            <h2>Lets add a menu link</h2>
+          </section>
+          <section>
+          <p>/modules/custom/hello/hello.links.menu.yml</p>
+           <pre>
+              <code class="yaml" data-trim>
+                hello.sayHi:
+  title: "Say Hi"
+  route_name: hello.sayHi
+  menu_name: tools
+              </code>
+            </pre>
+        </section>
 				</section>
          <section>
         <section>
@@ -376,17 +449,129 @@ class HelloRequestForm extends FormBase {
 						</pre>
 					</section>
 				</section>
-				<section>
-				<section>
-					<h2>Lets make a Block!</h2>
-					<div class="fragment" data-fragment-index="1">
-							<p>Without hook_block_info and hook_block_view!</p>
-					</div>
-				</section>
-				<section>
-					<p>/modules/custom/hello/src/Plugin/Block/HelloBlock.php</p>
-						<pre>
-							<code class="php" data-trim>
+      <section>
+        <section>
+          <h2>Configuration</h2>
+          <blockquote class="fragment" data-fragment-index="1">
+            Information about your site that is not content and is meant to be more permanent, such as the name of your site, the content types and views you have defined, etc.
+          </blockquote>
+          <p class="fragment" data-fragment-index="2">
+            Two types: <strong>Simple Configuration</strong> and <strong>Configuration entities</strong>
+          </p>
+        </section>
+        <section>
+          <p>/modules/custom/hello/config/install/hello.settings.yml</p>
+              <pre>
+              <code class="yaml" data-trim>
+              default_count: 10
+phrase: "Why hello"
+              </code>
+            </pre>
+        </section>
+        <section>
+          <h5>Simple Access:</h5>
+          <pre>
+              <code class="php" data-trim>
+                \Drupal::config('hello.settings')->get('default_count');
+              </code>
+          </pre>
+        </section>
+        <section>
+          <h2>Now lets make it configurable</h2>
+          <h5>Lets define a ConfigForm</h5>
+        </section>
+          <section>
+            <p>/modules/custom/hello/src/Form/HelloConfigForm.php</p>
+            <pre>
+              <code class="php" data-trim>
+/**
+ * @file
+ * Contains \Drupal\hello\Form\HelloConfigForm.
+ */
+
+namespace Drupal\hello\Form;
+
+use Drupal\Core\Form\ConfigFormBase;
+use Drupal\Core\Form\FormStateInterface;
+
+class HelloConfigForm extends ConfigFormBase {
+  /**
+   * {@inheritdoc}.
+   */
+  public function getFormId() {
+    return 'hello_config';
+  }
+
+  /**
+   * Declare what settings this config form will be changing.
+   */
+  protected function getEditableConfigNames() {
+    return ['hello.settings'];
+  }
+
+  /**
+   * {@inheritdoc}.
+   */
+  public function buildForm(array $form, FormStateInterface $form_state) {
+
+    $config = $this->config('hello.settings');
+
+    $form['default_count'] = array(
+      '#type' => 'number',
+      '#title' => $this->t('How many times do we say hi?'),
+      '#default_value' => $config->get('default_count'),
+    );
+
+    $form['phrase'] = array(
+      '#type' => 'textfield',
+      '#title' => $this->t('How do you want to say hi?'),
+      '#default_value' => $config->get('phrase'),
+    );
+
+    return parent::buildForm($form, $form_state);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
+      parent::submitForm($form, $form_state);
+
+      //lets load and set our configuration.
+      $config = $this->config('hello.settings');
+      $config->set('default_count', $form_state->getValue('default_count'));
+      $config->set('phrase', $form_state->getValue('phrase'));
+      //save the config.
+      $config->save();
+  }
+}
+              </code>
+            </pre>
+          </section>
+          <section>
+            <p>/modules/custom/hello/hello.routing.yml</p>
+              <pre>
+              <code class="yaml" data-trim>
+hello.configHi:
+  path: '/hello/config'
+  defaults:
+    _form: '\Drupal\hello\Form\HelloConfigForm'
+  requirements:
+    _permission: 'access content'
+              </code>
+            </pre>
+          </section>
+      </section>
+      <section>
+          <h2>Lets make a Block!</h2>
+          <div class="fragment" data-fragment-index="1">
+              <p>Without hook_block_info and hook_block_view!</p>
+          </div>
+        </section>
+        <section>
+          <p>/modules/custom/hello/src/Plugin/Block/HelloBlock.php</p>
+            <pre>
+              <code class="php" data-trim>
 namespace Drupal\hello\Plugin\Block;
 
 use Drupal\Core\Block\BlockBase;
@@ -407,9 +592,9 @@ class HelloBlock extends BlockBase {
   }
 }
 
-							</code>
-						</pre>
-				</section>
+              </code>
+            </pre>
+        </section>
         <section>
           <blockquote>Plugins Everywhere</blockquote>
           <ul class="fragment" data-fragment-index="1">
@@ -424,8 +609,7 @@ class HelloBlock extends BlockBase {
             <li>And more...</li>
           </ul>
         </section>
-			</section>
-
+      </section>
       <section>
         <section>
           <h2>Services</h2>
@@ -507,7 +691,7 @@ class HelloController extends ControllerBase {
         </section>
       </section>
       <section>
-          <p>So much more to explore...</p>
+          <p>So much more to explore and learn...</p>
           <p class="fragment" data-fragment-index="1">The future of Drupal is GR8!</p>
       </section>
       <section>

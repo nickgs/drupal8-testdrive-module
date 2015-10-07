@@ -182,6 +182,15 @@
             </aside>
           </section>
         </section>
+        <section>
+          <h2>Lets review some resources</h2>
+          <ul>
+            <li>https://api.drupal.org/api/drupal/8</li>
+            <li>https://www.drupal.org/documentation</li>
+            <li>https://www.drupal.org/project/examples</li>
+            <li>https://www.drupal.org/list-changes</li>
+          </ul>
+        </section>
 
 				<section>
 					<section>
@@ -706,6 +715,10 @@ class HelloBlock extends BlockBase {
           </p>
         </section>
         <section>
+          <h2>The Service Container</h2>
+          <p>A service container (or dependency injection container) is a PHP object that manages the instantiation of services.</p>
+        </section>
+        <section>
           /modules/custom/hello/src/HelloService.php
           <pre><code class="php" data-trim>
 namespace Drupal\hello;
@@ -774,6 +787,60 @@ class HelloController extends ControllerBase {
           </code>
           </pre>
         </section>
+        <section>
+          <h2>Services can serve many purposes</h2>
+          <h5>Lets take a look at another example</h5>
+        </section>
+        <section>
+          <h2>Drupal 8 Events</h2>
+          <p>Leveraging the Symfony Framework Events.</p>
+          <p>List of core events: <a href="http://bit.ly/core_events">http://bit.ly/core_events</a></p>
+        </section>
+        <section>
+          /modules/custom/hello/src/EventSubscriber/HelloEventSubscriber.php
+          <pre><code class="php" data-trim>
+namespace Drupal\hello\EventSubscriber;
+
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Drupal\Core\Session\AccountInterface;
+
+class HelloEventSubscriber implements EventSubscriberInterface {
+  protected $account;
+
+  public function __contruct(AccountInterface $account) {
+    $this->account = $account;
+  }
+
+  public function checkForSomething(GetResponseEvent $event) {
+      drupal_set_message("Big brother is here!");
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  static function getSubscribedEvents() {
+    $events[KernelEvents::REQUEST][] = array('checkForSomething');
+    return $events;
+  }
+}
+          </code>
+          </pre>
+        </section>
+        <section>
+            <p>/modules/custom/hello/hello.services.yml</p>
+              <pre>
+              <code class="yaml" data-trim>
+  hello_event_subscriber:
+    class: Drupal\hello\EventSubscriber\HelloEventSubscriber
+    arguments: ['@current_user']
+    tags: #Our Service Tags
+      - {name: event_subscriber}
+              </code>
+            </pre>
+          </section>
+          <section>
       </section>
       <section>
           <p>So much more to explore and learn...</p>

@@ -43,7 +43,7 @@
         <blockquote>StackStarter.io/spin</blockquote>
       </div>
       <div class="spin-code">
-        <blockquote>Spin Code: HELLO_NED</blockquote>
+        <blockquote>Spin Code: NEDCAMP</blockquote>
       </div>
     </header>
 
@@ -81,7 +81,7 @@
 					<h2>Play Along!</h2>
 					<img src="images/ss_logo_blkbg.png" class="no-style-image" style="width: 360px;"/>
 					<blockquote>StackStarter.io/spin</blockquote>
-          <blockqoute style="font-size: .8em">Spin Code: HELLO_NED</blockquote>
+          <blockqoute style="font-size: .8em">Spin Code: NEDCAMP</blockquote>
 					<aside class="notes">
               <ul>
                 <li>We will be going through alot of code.</li>
@@ -336,6 +336,18 @@ class HelloController extends ControllerBase {
               </code>
             </pre>
         </section>
+        <section>
+          <h2>What about permissions?</h2>
+        </section>
+        <section>
+          <p>/modules/custom/hello/hello.permissions.yml</p>
+           <pre>
+              <code class="yaml" data-trim>
+                request hello:
+  title: 'Request Hello'
+              </code>
+            </pre>
+        </section>
 				</section>
          <section>
         <section>
@@ -473,7 +485,7 @@ class HelloRequestForm extends FormBase {
   defaults:
     _form: '\Drupal\hello\Form\HelloRequestForm'
   requirements:
-    _permission: 'access content'
+    _permission: 'request hello'
 							</code>
 						</pre>
 					</section>
@@ -840,8 +852,6 @@ class HelloEventSubscriber implements EventSubscriberInterface {
               </code>
             </pre>
           </section>
-          <section>
-      </section>
       <section>
           <p>So much more to explore and learn...</p>
           <p class="fragment" data-fragment-index="1">The future of Drupal is GR8!</p>

@@ -43,7 +43,7 @@
         <blockquote>StackStarter.io/spin</blockquote>
       </div>
       <div class="spin-code">
-        <blockquote>Spin Code: #giveback</blockquote>
+        <blockquote>Spin Code: NJCAMP</blockquote>
       </div>
     </header>
 
@@ -81,7 +81,7 @@
 					<h2>Play Along!</h2>
 					<img src="images/ss_logo_blkbg.png" class="no-style-image" style="width: 360px;"/>
 					<blockquote>StackStarter.io/spin</blockquote>
-          <blockqoute style="font-size: .8em">Spin Code: #giveback</blockquote>
+          <blockqoute style="font-size: .8em">Spin Code: NJCAMP</blockquote>
 					<aside class="notes">
               <ul>
                 <li>We will be going through alot of code.</li>
@@ -113,7 +113,7 @@
             </aside>
 					</section>
 					<section>
-						<h2>Where are we going?</h2>
+						<h2>Where are we now?</h2>
 						<blockquote>A whole new world...</blockquote>
 						<img src="images/a_whole_new_world.gif"/>
 					</section>
@@ -162,6 +162,35 @@
             </aside>
           </section>
 				</section>
+<section>
+           <section>
+             <h2>Lets Review our Object Oriented Concepts</h2>
+          </section>
+            <section>
+             <h2>The 4 Pillars of OOP</h2>
+             <p class="fragment" data-fragment-index="1">Abstraction</p>
+             <p class="fragment" data-fragment-index="2">Encapsulation</p>
+             <p class="fragment" data-fragment-index="3">Inheritance</p>
+             <p class="fragment" data-fragment-index="4">Polymorphism</p>
+              <aside class="notes">
+              <ul>
+                <li>Abstraction - Expose essential features and hide the rest.</li>
+                <li>Encapsulation - Embody the features of your software within reuseable components. </li>
+                <li>Inheritance - Reuse your code by extending it and overriding where needed.</li>
+                <li>Polymorphism - Subclasses can take on the behavior of their parents. ex. Circle can look like a Shape.</li>
+              </ul>
+            </aside>
+          </section>
+        </section>
+        <section>
+          <h2>Lets review some resources</h2>
+          <ul>
+            <li>https://api.drupal.org/api/drupal/8</li>
+            <li>https://www.drupal.org/documentation</li>
+            <li>https://www.drupal.org/project/examples</li>
+            <li>https://www.drupal.org/list-changes</li>
+          </ul>
+        </section>
 
 				<section>
 					<section>
@@ -270,6 +299,9 @@ class HelloController extends ControllerBase {
 
 							</code>
 						</pre>
+            <aside class="notes">
+              Scope resolution operator
+            </aside>
 					</section>
           <section>
             <h2>Awesome!</h2>
@@ -304,6 +336,18 @@ class HelloController extends ControllerBase {
   title: "Say Hi"
   route_name: hello.sayHi
   menu_name: tools
+              </code>
+            </pre>
+        </section>
+        <section>
+          <h2>What about permissions?</h2>
+        </section>
+        <section>
+          <p>/modules/custom/hello/hello.permissions.yml</p>
+           <pre>
+              <code class="yaml" data-trim>
+                request hello:
+  title: 'Request Hello'
               </code>
             </pre>
         </section>
@@ -444,7 +488,7 @@ class HelloRequestForm extends FormBase {
   defaults:
     _form: '\Drupal\hello\Form\HelloRequestForm'
   requirements:
-    _permission: 'access content'
+    _permission: 'request hello'
 							</code>
 						</pre>
 					</section>
@@ -458,6 +502,9 @@ class HelloRequestForm extends FormBase {
           <p class="fragment" data-fragment-index="2">
             Two types: <strong>Simple Configuration</strong> and <strong>Configuration entities</strong>
           </p>
+        </section>
+        <section>
+          <h3>Sites own configuration</h3>
         </section>
         <section>
           <p>/modules/custom/hello/config/install/hello.settings.yml</p>
@@ -686,6 +733,10 @@ class HelloBlock extends BlockBase {
           </p>
         </section>
         <section>
+          <h2>The Service Container</h2>
+          <p>A service container (or dependency injection container) is a PHP object that manages the instantiation of services.</p>
+        </section>
+        <section>
           /modules/custom/hello/src/HelloService.php
           <pre><code class="php" data-trim>
 namespace Drupal\hello;
@@ -753,15 +804,71 @@ class HelloController extends ControllerBase {
 
           </code>
           </pre>
+          <aside class="notes">
+            static refers to whatever class in the hierarchy you called the method on.
+          </aside>
         </section>
-      </section>
+        <section>
+          <h2>Services can serve many purposes</h2>
+          <h5>Lets take a look at another example</h5>
+        </section>
+        <section>
+          <h2>Drupal 8 Events</h2>
+          <p>Leveraging the Symfony Framework Events.</p>
+          <p>List of core events: <a href="http://bit.ly/core_events">http://bit.ly/core_events</a></p>
+        </section>
+        <section>
+          /modules/custom/hello/src/EventSubscriber/HelloEventSubscriber.php
+          <pre><code class="php" data-trim>
+namespace Drupal\hello\EventSubscriber;
+
+use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Drupal\Core\Session\AccountInterface;
+
+class HelloEventSubscriber implements EventSubscriberInterface {
+  protected $account;
+
+  public function __contruct(AccountInterface $account) {
+    $this->account = $account;
+  }
+
+  public function checkForSomething(GetResponseEvent $event) {
+      drupal_set_message("Big brother is here!");
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  static function getSubscribedEvents() {
+    $events[KernelEvents::REQUEST][] = array('checkForSomething');
+    return $events;
+  }
+}
+          </code>
+          </pre>
+        </section>
+        <section>
+            <p>/modules/custom/hello/hello.services.yml</p>
+              <pre>
+              <code class="yaml" data-trim>
+  hello_event_subscriber:
+    class: Drupal\hello\EventSubscriber\HelloEventSubscriber
+    arguments: ['@current_user']
+    tags: #Our Service Tags
+      - {name: event_subscriber}
+              </code>
+            </pre>
+          </section>
       <section>
           <p>So much more to explore and learn...</p>
-          <p class="fragment" data-fragment-index="1">The future of Drupal is GR8!</p>
       </section>
       <section>
           <p>Thank you!</p>
           <h3>Questions?</h3>
+          <p>Email: <a href='mailto:nick@segosolutions.com'>nick@segosolutions.com</a></a>
+          <p>Twitter: <a href="http://twitter.com/direct">@direct</a></p>
           <p>Slides Available: <br/> <a href="http://nickgs.github.io/drupal8-testdrive-module">http://nickgs.github.io/drupal8-testdrive-module</a></p>
       </section>
 			</div>
